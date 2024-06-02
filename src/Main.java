@@ -8,6 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -38,13 +40,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (System.getProperty("os.name").contains("win")) {
-            try {
-                Runtime.getRuntime().exec("taskkill /f /im ngrok.exe");
-            } catch (IOException e) {
-                this.getLogger().log(Level.SEVERE, "Failed to kill ngrok. You will have to do so manually via taskmgr.");
-            }
-        }
+        stopNgrok();
     }
 
     @Override
@@ -156,6 +152,22 @@ public class Main extends JavaPlugin {
 
     }
 
+    void stopNgrok() {
+        try {
+            String osName = System.getProperty("os.name").toLowerCase();
+            this.getLogger().log(Level.INFO, osName);
+
+            if (osName.contains("nix") || osName.contains("nux")) {
+                Runtime.getRuntime().exec("pkill ngrok");
+            } else if (osName.toLowerCase().contains("win")) {
+                Runtime.getRuntime().exec("taskkill /f /im ngrok.exe");
+            }
+
+        } catch (Exception e) {
+            this.getLogger().log(Level.SEVERE, e.toString());
+            this.getLogger().log(Level.SEVERE, "Failed to kill ngrok");
+        }
+    }
 
     void startNgrok() throws IOException {
         Runtime.getRuntime().exec(command);
@@ -170,7 +182,11 @@ public class Main extends JavaPlugin {
     }
 
     String getIp() throws IOException{
+        String tunnelData = getTunnelData();
+        return tunnelData.split("tcp://")[1].split("\"")[0];
+    }
 
+    String getTunnelData() throws IOException {
         URL uri= new URL("http://localhost:4040/api/tunnels");
         URLConnection ec = uri.openConnection();
         BufferedReader in = new BufferedReader(new InputStreamReader(ec.getInputStream(), StandardCharsets.UTF_8));
@@ -180,8 +196,7 @@ public class Main extends JavaPlugin {
             a.append(inputLine);
         in.close();
 
-
-        return a.toString().split("tcp://")[1].split("\"")[0];
+        return a.toString();
     }
 
     void sendMessages(String ip) {
