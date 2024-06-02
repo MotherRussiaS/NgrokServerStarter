@@ -1,11 +1,15 @@
 # Usage
 
+## Dependencies
+
+Ngrok must be installed with the authtoken already set up. Plugin natively supports Spigot 1.20.6, but feel free to use the source code to build the plugin for whatever Minecraft version necessary.
+
 ## Setup
 
 Add jar file to 'plugins' directory in server.
 
-Plugin will create a file called 'config' in the server's default directory when first started
->Note: This may cause errors to be thrown when first running the plugin
+Plugin will create a file called 'config' in the server's default directory when first started.
+>Note: This may cause errors to be thrown when first running the plugin.
 
 ### Example Config File
 
