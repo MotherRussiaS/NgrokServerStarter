@@ -28,11 +28,22 @@ public class Main extends JavaPlugin {
     ArrayList<User> users = new ArrayList<>();
 
     @Override
-    public void onLoad() {
+    public void onEnable() {
         try {
             this.run();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        if (System.getProperty("os.name").contains("win")) {
+            try {
+                Runtime.getRuntime().exec("taskkill /f /im ngrok.exe");
+            } catch (IOException e) {
+                this.getLogger().log(Level.SEVERE, "Failed to kill ngrok. You will have to do so manually via taskmgr.");
+            }
         }
     }
 

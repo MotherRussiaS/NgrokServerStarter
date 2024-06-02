@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-Ngrok must be installed with the authtoken already set up. Plugin natively supports Spigot 1.20.6, but feel free to use the source code to build the plugin for whatever Minecraft version necessary.
+Ngrok must be installed with the authtoken already set up. Windows users should place their ngrok.exe file into the server directory. Plugin natively supports Spigot 1.20.6, but feel free to use the source code to build the plugin for whatever Minecraft version necessary.
 
 ## Setup
 
@@ -10,6 +10,8 @@ If you haven't already created a discord bot, make one, and note its token for u
 https://discord.com/developers/docs/quick-start/getting-started
 
 Add jar file to 'plugins' directory in server.
+
+**Windows users must also add their ngrok executable to the server directory.**
 
 Plugin will create a file called 'config' in the server's default directory when first started.
 >Note: This may cause errors to be thrown when first running the plugin.
