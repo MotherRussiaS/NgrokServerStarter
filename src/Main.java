@@ -1,7 +1,11 @@
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.User;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.URL;
@@ -30,6 +34,25 @@ public class Main extends JavaPlugin {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, String label, @NotNull String[] args) {
+
+        if (label.equalsIgnoreCase("sendip")) {
+
+            if (!sender.isOp()) {
+                return false;
+            }
+
+            try {
+                sendMessages(getIp());
+            } catch (IOException e) {
+                sender.sendMessage(ChatColor.RED + "Failed to get ip from ngrok");
+            }
+        }
+
+        return false;
     }
 
 
@@ -84,13 +107,19 @@ public class Main extends JavaPlugin {
             startNgrok();
         } catch (IOException e) {
             this.getLogger().log(Level.SEVERE, e.toString());
-            this.getLogger().log(Level.SEVERE, "Ngrok failed to load");
+            this.getLogger().log(Level.SEVERE, "Ngrok failed to load. Check command in config");
         }
 
         this.getLogger().log(Level.INFO, token);
 
 
-        JDA jda = JDABuilder.createDefault(token).build();
+        try {
+            jda = JDABuilder.createDefault(token).build();
+        } catch (Exception e) {
+            this.getLogger().log(Level.SEVERE, "JDA failed to load. Have you added your token in the config?");
+        }
+
+
         addUsers(jda);
 
 
