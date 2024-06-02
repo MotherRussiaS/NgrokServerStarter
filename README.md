@@ -6,6 +6,9 @@ Ngrok must be installed with the authtoken already set up. Plugin natively suppo
 
 ## Setup
 
+If you haven't already created a discord bot, make one, and note its token for use in the plugin
+https://discord.com/developers/docs/quick-start/getting-started
+
 Add jar file to 'plugins' directory in server.
 
 Plugin will create a file called 'config' in the server's default directory when first started.
