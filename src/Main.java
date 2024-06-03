@@ -8,8 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +19,7 @@ public class Main extends JavaPlugin {
 
 
     String token;
-    int delay;
+    int delay = 2000;
     String[] userStrings;
     String message;
     String command = "ngrok tcp 25565";
@@ -72,7 +70,7 @@ public class Main extends JavaPlugin {
                 //noinspection ResultOfMethodCallIgnored
                 configFile.createNewFile();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                this.getLogger().log(Level.SEVERE, "Failed to create config file");
             }
         }
 
@@ -82,52 +80,55 @@ public class Main extends JavaPlugin {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
 
-                if (!line.contains("#")) {
-                    String prefix = line.split("=")[0];
-                    String contents = line.split("=")[1];
+                if (!line.startsWith("#")) {
+                    try {
+                        String prefix = line.split("=")[0];
+                        String contents = line.split("=")[1];
 
-                    switch (prefix) {
-                        case "token":
-                            token = contents;
-                            break;
-                        case "delay":
-                            delay = Integer.parseInt(contents);
-                            break;
-                        case "users":
-                            userStrings = contents.split(",");
-                            break;
-                        case "message":
-                            message = contents;
-                            break;
-                        case "command":
-                            command = contents;
-                    }
+                        switch (prefix) {
+                            case "token":
+                                token = contents;
+                                break;
+                            case "delay":
+                                delay = Integer.parseInt(contents);
+                                break;
+                            case "users":
+                                userStrings = contents.split(",");
+                                break;
+                            case "message":
+                                message = contents;
+                                break;
+                            case "command":
+                                command = contents;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignored) {}
+
                 }
 
             }
         } catch (FileNotFoundException e) {
             this.getLogger().log(Level.SEVERE, "Config file couldn't be found");
+            return;
         }
 
         try {
             startNgrok();
         } catch (IOException e) {
-            this.getLogger().log(Level.SEVERE, e.toString());
             this.getLogger().log(Level.SEVERE, "Ngrok failed to load. Check command in config");
+            return;
         }
 
         this.getLogger().log(Level.INFO, token);
 
 
         try {
-            jda = JDABuilder.createDefault(token).build();
+            initJDA();
         } catch (Exception e) {
             this.getLogger().log(Level.SEVERE, "JDA failed to load. Have you added your token in the config?");
+            return;
         }
 
-
-        addUsers(jda);
-
+        addUsers();
 
         Thread.sleep(delay);
 
@@ -145,10 +146,12 @@ public class Main extends JavaPlugin {
         }
 
 
-        System.out.printf(ip);
-
         sendMessages(ip);
 
+    }
+
+    void initJDA() {
+        jda = JDABuilder.createDefault(token).build();
     }
 
     void stopNgrok() {
@@ -164,7 +167,7 @@ public class Main extends JavaPlugin {
 
         } catch (Exception e) {
             this.getLogger().log(Level.SEVERE, e.toString());
-            this.getLogger().log(Level.SEVERE, "Failed to kill ngrok");
+            this.getLogger().log(Level.SEVERE, "FAILED TO KILL NGROK");
         }
     }
 
@@ -172,10 +175,8 @@ public class Main extends JavaPlugin {
         Runtime.getRuntime().exec(command);
     }
 
-    void addUsers(JDA jda) {
+    void addUsers() {
         for (String userString : userStrings) {
-            System.out.println(userString);
-
             jda.retrieveUserById(userString).queue(user -> users.add(user));
         }
     }
