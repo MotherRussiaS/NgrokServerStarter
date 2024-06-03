@@ -65,7 +65,7 @@ public class Main extends JavaPlugin {
 
     public void run() throws InterruptedException {
 
-        File configFile = new File("config");
+        File configFile = new File("config.cfg");
 
         if (!configFile.exists()) {
             try {
