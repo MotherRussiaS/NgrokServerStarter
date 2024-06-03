@@ -82,27 +82,26 @@ public class Main extends JavaPlugin {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
 
-                if (line.contains("#"))
-                    break;
+                if (!line.contains("#")) {
+                    String prefix = line.split("=")[0];
+                    String contents = line.split("=")[1];
 
-                String prefix = line.split("=")[0];
-                String contents = line.split("=")[1];
-
-                switch (prefix) {
-                    case "token":
-                        token = contents;
-                        break;
-                    case "delay":
-                        delay = Integer.parseInt(contents);
-                        break;
-                    case "users":
-                        userStrings = contents.split(",");
-                        break;
-                    case "message":
-                        message = contents;
-                        break;
-                    case "command":
-                        command = contents;
+                    switch (prefix) {
+                        case "token":
+                            token = contents;
+                            break;
+                        case "delay":
+                            delay = Integer.parseInt(contents);
+                            break;
+                        case "users":
+                            userStrings = contents.split(",");
+                            break;
+                        case "message":
+                            message = contents;
+                            break;
+                        case "command":
+                            command = contents;
+                    }
                 }
 
             }
