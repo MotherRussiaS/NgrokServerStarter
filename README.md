@@ -13,7 +13,7 @@ Add jar file to 'plugins' directory in server.
 
 **Windows users must also add their ngrok executable to the server directory.**
 
-Plugin will create a file called 'config' in the server's default directory when first started.
+Plugin will create a file called 'config.cfg' in the server's default directory when first started.
 >Note: This may cause errors to be thrown when first running the plugin.
 
 ### Example Config File
