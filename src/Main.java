@@ -157,7 +157,7 @@ public class Main extends JavaPlugin {
     void stopNgrok() {
         try {
             String osName = System.getProperty("os.name").toLowerCase();
-            this.getLogger().log(Level.INFO, osName);
+            this.getLogger().log(Level.INFO, "OS detected: " + osName);
 
             if (osName.contains("nix") || osName.contains("nux")) {
                 Runtime.getRuntime().exec("pkill ngrok");
